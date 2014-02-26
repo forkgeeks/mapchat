@@ -54,7 +54,7 @@
         -->
 <script type="text/javascript">
 // The Client ID for your application, as configured on the Google APIs console.
-var clientId = 'YOUR_CLIENT_ID';
+var clientId = '694180608486-om9ck7s4jvdg9if21h8u8hn4643dmee3.apps.googleusercontent.com';
 
 // The oauth scope for displaying Maps Engine data.
 var scopes = 'https://www.googleapis.com/auth/mapsengine.readonly';
@@ -65,9 +65,9 @@ function initialize() {
 
 function authorizationComplete(authResult) {
   // List the details of a specific Google Maps Engine Map.
-  var url = "https://www.googleapis.com/mapsengine/v1/maps/YOUR_MAP_ID";
+  var url = "https://www.googleapis.com/mapsengine/v1/tables/17239569094152164441-09507073323105492707";
 
-  jQuery.ajax({
+  $.ajax({
     url: url,
     dataType: 'json',
     headers: {
@@ -145,7 +145,6 @@ function authorizationFlow(authorization_complete, refresh_complete) {
   }
 }
 </script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=initialize"></script>
 
     </body>
