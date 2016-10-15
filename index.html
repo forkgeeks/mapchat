@@ -1,151 +1,157 @@
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]>    <html class="no-js iem7"> <![endif]-->
-<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="HandheldFriendly" content="True">
-        <meta name="MobileOptimized" content="320">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="cleartype" content="on">
-
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/touch/apple-touch-icon-144x144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/touch/apple-touch-icon-114x114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/touch/apple-touch-icon-72x72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" href="img/touch/apple-touch-icon-57x57-precomposed.png">
-        <link rel="shortcut icon" href="img/touch/apple-touch-icon.png">
-
-        <!-- Tile icon for Win8 (144x144 + tile color) -->
-        <meta name="msapplication-TileImage" content="img/touch/apple-touch-icon-144x144-precomposed.png">
-        <meta name="msapplication-TileColor" content="#222222">
-
-
-        <!-- For iOS web apps. Delete if not needed. https://github.com/h5bp/mobile-boilerplate/issues/94 -->
-        <!--
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="">
-        -->
-
-        <!-- This script prevents links from opening in Mobile Safari. https://gist.github.com/1042026 -->
-        <!--
-        <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
-        -->
-
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-    </head>
-    <body>
-        <h1>Hello World</h1>
-        <!-- Add your site or application content here -->
-
-        <script src="js/vendor/zepto.min.js"></script>
-        <script src="js/helper.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID.
-        <script>
-            var _gaq=[["_setAccount","UA-XXXXX-X"],["_trackPageview"]];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-            g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
-            s.parentNode.insertBefore(g,s)}(document,"script"));
-        </script>
-        -->
+<html>
+<head>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=false"></script>
+<script src="https://apis.google.com/js/auth.js"></script>
 <script type="text/javascript">
+// An example of how to use oauth to obtain authorization for a web application
+// to display Maps Engine layers readable by a user of that application.
+//
+// The application follows the following flow:
+// 1. When first loaded, the application checks if the user has already
+//    authorized this application. If so, a function is called to display
+//    the requested layer. This check is asynchronous, so uses callbacks in
+//    JavaScript. If the user has authorized the application, an access_token
+//    is granted by oauth, which can be used to authenticate when displaying
+//    a Maps Engine Layer.
+//
+// 2. If the user has not authorized this application, an 'Authorize' button
+//    is shown in the UI. An oauth flow is started when the user clicks this
+//    button. Within this flow, the user is asked if they will grant permission
+//    for this application to be able to read their Maps Engine data so that
+//    it can be displayed on a Map.
+//
+// 3. If the user grants authorization to the application, the 'Authorize'
+//    button is hidden and the Layer is shown. If not the 'Authorize' button
+//    remains visible.
+//
+// 4. Periodically, the access_token is refreshed by making another call to the
+//    oauth library.
+
 // The Client ID for your application, as configured on the Google APIs console.
 var clientId = '694180608486-om9ck7s4jvdg9if21h8u8hn4643dmee3.apps.googleusercontent.com';
 
 // The oauth scope for displaying Maps Engine data.
 var scopes = 'https://www.googleapis.com/auth/mapsengine.readonly';
 
+// The Asset ID of the Maps Engine Layer to display.
+var layerId = '17239569094152164441-09507073323105492707';
+
+// This function is run when the page (including the Maps API and Google APIs
+// client libraries) have finished loading.
 function initialize() {
-  authorizationFlow(authorizationComplete, refreshComplete);
-}
-
-function authorizationComplete(authResult) {
-  // List the details of a specific Google Maps Engine Map.
-  var url = "https://www.googleapis.com/mapsengine/v1/tables/17239569094152164441-09507073323105492707";
-
-  $.ajax({
-    url: url,
-    dataType: 'json',
-    headers: {
-      'Authorization': 'Bearer ' + authResult.access_token
-    },
-    success: function(response) {
-      // Log the details of the Map.
-      console.log(response);
-    },
-    error: function(response) {
-      response = JSON.parse(response.responseText);
-      console.log("Error: ", response);
-    }
-  });
-}
-
-function refreshComplete() {
-  // The refreshed token is automatically stored and used by gapi.client for
-  // any additional requests, so we do not need to do anything in this handler.
-}
-
-// The entry point to the auth flow.
-// authorizationComplete is called with an access_token when the oauth flow
-// first completes.
-// refreshComplete is called with a new access_token once the token refreshes.
-function authorizationFlow(authorization_complete, refresh_complete) {
   checkAuth(false, handleAuthResult);
+}
 
-  function checkAuth(prompt_user, callback) {
-    var options = {
-      client_id: clientId,
-      scope: scopes,
+// A shared function which checks if the user has previously authorized this
+// application, and if so calls the supplied callback.
+// This function should always be called before calling a function which
+// requires an oauth access_token.
+//
+// If prompt_user is true, the user will be prompted to provide access. This
+// should not be set to true unless this function was triggered by a user
+// action (e.g. clicking a button).
+//
+// If prompt_user is set to false, and the user is not authorized, the callback
+// will be called with null.
+function checkAuth(prompt_user, callback) {
+  var options = {
+    client_id: clientId,
+    scope: scopes,
 
-      // Setting immediate to 'true' will avoid prompting the user for
-      // authorization if they have already granted it in the past.
-      immediate: !prompt_user
-    }
-
-    gapi.auth.authorize(options, callback);
+    // Setting immediate to 'true' will avoid prompting the user for
+    // authorization if they have already granted it in the past.
+    immediate: !prompt_user
   }
 
-  function handleAuthResult(authResult) {
-    var authorizeButton = document.getElementById('authorize_button');
+  // Check to see if the current user has authorized this application.
+  gapi.auth.authorize(options, callback);
+}
 
-    // Has the user authorized this application?
-    if (authResult && !authResult.error) {
-      // The application is authorized. Hide the 'Authorization' button.
-      authorizeButton.style.display = 'none';
-      authorization_complete(authResult);
+// A callback run after checking if the user has authorized this application.
+// If they have not, then authResult will be null, and a button will be
+// displayed which the user can click to begin authorization.
+//
+// Authorization can only be started in response to a user action (such as
+// clicking a button) in order to avoid triggering popup blockers.
+function handleAuthResult(authResult) {
+  var authorizeButton = document.getElementById('authorize_button');
 
-      // We must refresh the token after it expires.
-      window.setTimeout(refreshToken, authResult.expires_in * 1000);
-    } else {
-      // The application has not been authorized. Start the authorization flow
-      // when the user clicks the button.
-      authorizeButton.style.display = 'block';
-      authorizeButton.onclick = handleAuthClick;
-    }
+  // Has the user authorized this application?
+  if (authResult && !authResult.error) {
+    // The application is authorized. Hide the 'Authorization' button.
+    authorizeButton.style.display = 'none';
+    showMap(authResult);
+  } else {
+    // The application has not been authorized. Start the authorization flow
+    // when the user clicks the button.
+    authorizeButton.style.display = 'block';
+    authorizeButton.onclick = handleAuthClick;
   }
+}
 
-  function handleAuthClick(event) {
-    checkAuth(true, handleAuthResult);
-    return false;
-  }
+// This function is called when the user clicks the Authorization button. It
+// starts the authorization flow.
+function handleAuthClick(event) {
+  checkAuth(true, handleAuthResult);
+  return false;
+}
 
-  function refreshToken() {
-    checkAuth(false, refreshComplete);
-  }
+// This function is called once handleAuthResult detects that authorization
+// has been provided.
+function showMap(authResult) {
+  // Create a new Google Maps API Map
+  var mapOptions = {
+    center: new google.maps.LatLng(0,0),
+    zoom: 4
+  };
+  map = new google.maps.Map(
+      document.getElementById("map_canvas"),
+      mapOptions);
 
-  function refreshComplete(authResult) {
-    refresh_complete(authResult);
+  // Add a Maps Engine Layer to this Map. The access_token granted by the oauth
+  // flow is used here to access user data.
+  mapsEngineLayer = new google.maps.visualization.MapsEngineLayer({
+    layerId: layerId,
+    accessToken: authResult.access_token
+  });
+  mapsEngineLayer.setMap(map);
 
-    // Refresh the token once it expires.
-    window.setTimeout(refreshToken, authResult.expires_in * 1000);
-  }
+  // Add an event listener which modifies the bounds of the Map to best fit
+  // the Layer once the layer has loaded.
+  google.maps.event.addListener(mapsEngineLayer, 'bounds_changed', function() {
+    map.fitBounds(mapsEngineLayer.get('bounds'));
+  });
+
+  // The access_token provided by the oauth flow is only valid for a certain
+  // amount of time. Add a timer which will refresh the access_token after this
+  // amount of time has elapsed, so that the Layer will continue to work.
+  window.setTimeout(refreshToken, authResult.expires_in * 1000);
+}
+
+// This function is called once the oauth token has expired. It starts an
+// oauth flow in the background which obtains a new token. The user will not
+// be prompted to do anything, because we set the 'immediate' property on the
+// gapi.auth.authorize request to true.
+function refreshToken() {
+  checkAuth(false, refreshLayer);
+}
+
+// This function is called once an expired access_token has been refreshed, and
+// a new access_token is available.
+function refreshLayer(authResult) {
+  // Update the token provided to the MapsEngineLayer.
+  mapsEngineLayer.set('accessToken', authResult.access_token);
+
+  // This token will also expire after some time, so create a timer which will
+  // refresh it again.
+  window.setTimeout(refreshToken, authResult.expires_in * 1000);
 }
 </script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=initialize"></script>
-<input type="button" value="Authorize" id="authorize_button" style="display: none;"></input>
-    </body>
+</head>
+<body onload="initialize()">
+  <input type="button" value="Authorize" id="authorize_button"
+    style="display: none;"></input>
+  <div id="map_canvas" style="height: 100%; width: 100%;">
+  </div>
+</body>
 </html>
