@@ -1,1 +1,4 @@
 /.project
+*.un~
+*.swp
+.DS_Store
